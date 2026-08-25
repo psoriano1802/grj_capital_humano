@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: rh_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password_123
+      POSTGRES_DB: rh_management
+    volumes:
+      - rh_db_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rh_app
+    restart: always
+    depends_on:
+      - db
+      - compreface
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=rh_management
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres_password_123
+      - COMPREFACE_URL=http://compreface:8000
+      - COMPREFACE_API_KEY=your_compreface_app_api_key
+      - COMPREFACE_SIMILARITY_THRESHOLD=0.7
+      - FACE_RECOGNITION_ENGINE=compreface
+      - FACE_DISTANCE_THRESHOLD=0.5
+    ports:
+      - "3000:3000"
+    volumes:
+      - rh_uploads:/app/uploads
+
+  compreface:
+    image: exadel/compreface:1.2.0
+    container_name: rh_compreface
+    restart: always
+    volumes:
+      - compreface_data:/compreface
+    ports:
+      - "8000:8000"
+
+volumes:
+  rh_db_data:
+  rh_uploads:
+  compreface_data:

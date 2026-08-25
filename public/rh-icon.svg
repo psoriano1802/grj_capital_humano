@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Fondo con gradiente -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e3a5f"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo redondeado -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+
+  <!-- Persona izquierda (cuerpo) -->
+  <circle cx="23" cy="18" r="6" fill="url(#accent)"/>
+  <path d="M13 38 Q13 28 23 28 Q33 28 33 38" fill="url(#accent)" opacity="0.85"/>
+
+  <!-- Persona derecha (más pequeña, segundo nivel) -->
+  <circle cx="42" cy="20" r="4.5" fill="#818cf8" opacity="0.8"/>
+  <path d="M34 36 Q34 28 42 28 Q50 28 50 36" fill="#818cf8" opacity="0.6"/>
+
+  <!-- Línea de conexión organigrama -->
+  <line x1="23" y1="39" x2="23" y2="46" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="23" y1="46" x2="42" y2="46" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="42" y1="46" x2="42" y2="50" stroke="#818cf8" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Nodos del organigrama -->
+  <rect x="16" y="50" width="14" height="7" rx="2" fill="url(#accent)" opacity="0.9"/>
+  <rect x="35" y="50" width="14" height="7" rx="2" fill="#818cf8" opacity="0.7"/>
+
+  <!-- Punto central organigrama -->
+  <circle cx="23" cy="46" r="2" fill="#0ea5e9"/>
+  <circle cx="42" cy="46" r="2" fill="#818cf8"/>
+</svg>

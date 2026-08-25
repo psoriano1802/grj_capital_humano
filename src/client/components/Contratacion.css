@@ -1,0 +1,191 @@
+/* ════════════════════════════════════════════════════════════
+   MÓDULO DE CONTRATACIÓN – Estilos
+   ════════════════════════════════════════════════════════════ */
+
+.contratacion-container {
+    animation: fadeIn .25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ── CABECERA ──────────────────────────────────────────────── */
+.contratacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.contratacion-title h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--gray-50,#f8fafc);
+    margin-bottom: 4px;
+}
+.contratacion-title p {
+    font-size: 0.9rem;
+    color: var(--gray-400,#9ca3af);
+}
+
+/* ── LAYOUT PRINCIPAL ──────────────────────────────────────── */
+.contratacion-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .contratacion-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── MENÚ LATERAL DE CATÁLOGOS ─────────────────────────────── */
+.catalog-menu {
+    background: var(--bg-dark-secondary, #1e293b);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1rem 0;
+    position: sticky;
+    top: 2rem;
+}
+
+.catalog-menu-title {
+    padding: 0 1.5rem 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-300,#d1d5db);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 0.5rem;
+}
+
+.catalog-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.catalog-menu-item {
+    padding: 0.75rem 1.5rem;
+    color: var(--gray-400,#9ca3af);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-left: 3px solid transparent;
+}
+
+.catalog-menu-item:hover {
+    background: rgba(255,255,255,0.02);
+    color: var(--gray-200,#e5e7eb);
+}
+
+.catalog-menu-item.active {
+    background: rgba(14,165,233,0.1);
+    color: var(--primary-400, #38bdf8);
+    border-left-color: var(--primary-400, #38bdf8);
+    font-weight: 600;
+}
+
+/* ── CONTENIDO DEL CATÁLOGO ────────────────────────────────── */
+.catalog-content {
+    background: var(--bg-dark-secondary, #1e293b);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.catalog-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.catalog-content-header h2 {
+    font-size: 1.25rem;
+    color: var(--gray-100,#f1f5f9);
+}
+
+.catalog-table-container {
+    overflow-x: auto;
+}
+
+/* ── TABLA ESTILO MÓDULO ───────────────────────────────────── */
+.ct-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+}
+
+.ct-table th {
+    padding: 1rem;
+    color: var(--primary-400, #38bdf8);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(14,165,233,0.3);
+}
+
+.ct-table td {
+    padding: 1rem;
+    color: var(--gray-300,#d1d5db);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.95rem;
+}
+
+.ct-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+}
+
+.ct-desc {
+    color: var(--gray-400,#9ca3af);
+    font-size: 0.85rem;
+}
+
+.ct-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ct-btn-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.ct-btn-delete:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.ct-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.ct-loading {
+    padding: 3rem;
+    text-align: center;
+    color: var(--gray-400,#9ca3af);
+    font-size: 1.1rem;
+}

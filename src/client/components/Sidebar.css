@@ -1,0 +1,231 @@
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-dark-secondary);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar-header {
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.logo-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.5));
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-400) 0%, var(--accent-400) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: var(--spacing-md) 0;
+    overflow-y: auto;
+}
+
+.menu-section {
+    margin-bottom: var(--spacing-sm);
+}
+
+.menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background: transparent;
+    border: none;
+    color: var(--gray-300);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.menu-item:hover {
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--primary-300);
+}
+
+.menu-item.expanded {
+    color: var(--primary-400);
+}
+
+.menu-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.menu-label {
+    flex: 1;
+    text-align: left;
+}
+
+.menu-arrow {
+    font-size: 0.7rem;
+    transition: transform var(--transition-base);
+}
+
+.submenu {
+    background: rgba(0, 0, 0, 0.2);
+    animation: slideDown var(--transition-base) ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
+.submenu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-xl);
+    padding-left: 4rem;
+    background: transparent;
+    border: none;
+    color: var(--gray-400);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.submenu-item::before {
+    content: '';
+    position: absolute;
+    left: 2.5rem;
+    width: 2px;
+    height: 100%;
+    background: var(--gray-700);
+    transition: background var(--transition-base);
+}
+
+.submenu-item:hover {
+    background: rgba(14, 165, 233, 0.05);
+    color: var(--primary-300);
+}
+
+.submenu-item:hover::before {
+    background: var(--primary-500);
+}
+
+.submenu-item.active {
+    color: var(--primary-400);
+    background: rgba(14, 165, 233, 0.1);
+    font-weight: 600;
+}
+
+.submenu-item.active::before {
+    background: var(--primary-500);
+    box-shadow: 0 0 10px var(--primary-500);
+}
+
+.submenu-icon {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.submenu-label {
+    flex: 1;
+    text-align: left;
+}
+
+.sidebar-footer {
+    padding: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(14, 165, 233, 0.05);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(14, 165, 233, 0.1);
+    transition: all var(--transition-base);
+}
+
+.user-info:hover {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: rgba(14, 165, 233, 0.2);
+    transform: translateY(-2px);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-600) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-100);
+    margin-bottom: 2px;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: var(--gray-400);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .submenu-item {
+        padding-left: 3rem;
+    }
+
+    .submenu-item::before {
+        left: 1.5rem;
+    }
+}

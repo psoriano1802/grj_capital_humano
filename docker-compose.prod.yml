@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: rh_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password_123
+      POSTGRES_DB: rh_management
+    volumes:
+      - rh_db_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+  app:
+    image: app-rh-encapsulada:latest
+    container_name: rh_app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=rh_management
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres_password_123
+    ports:
+      - "3000:3000"
+    volumes:
+      - rh_uploads:/app/uploads
+
+volumes:
+  rh_db_data:
+  rh_uploads:
