@@ -44,7 +44,7 @@ const AsistenciasModule: React.FC<AsistenciasModuleProps> = ({ initialTab = 'reg
             const mensaje = await marcarAsistencia(datos);
             alert(mensaje);
         } catch (error: any) {
-            alert(error.message || 'Error de conexión con el biométrico o servidor');
+            alert(error.message || 'Error de conexión con el biométrico o servidor!');
         }
     };
 

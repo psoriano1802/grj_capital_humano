@@ -1,6 +1,6 @@
 # Sistema de Gestión de Recursos Humanos
 
-Sistema completo de gestión de Recursos Humanos con control biométrico (Face ID y huella dactilar), gestión de permisos, vacaciones e incapacidades.
+Sistema completo de gestión de Recursos Humanos con control biométrico (Face ID y huella dactilar), gestión de permisos, vacaciones e incapacidades y comedor.
 
 ## 🚀 Características
 
