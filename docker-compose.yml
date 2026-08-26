@@ -3,27 +3,26 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: rh_db
+    container_name: ${CLIENT}_db
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_password_123
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres_password_123}
       POSTGRES_DB: rh_management
     volumes:
       - rh_db_data:/var/lib/postgresql/data
       - ./database:/docker-entrypoint-initdb.d
-    ports:
-      - "5432:5432"
+    networks:
+      - internal
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: rh_app
+    container_name: ${CLIENT}_app
     restart: always
     depends_on:
       - db
-      - compreface
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -31,27 +30,27 @@ services:
       - DB_PORT=5432
       - DB_NAME=rh_management
       - DB_USER=postgres
-      - DB_PASSWORD=postgres_password_123
-      - COMPREFACE_URL=http://compreface:8000
-      - COMPREFACE_API_KEY=your_compreface_app_api_key
-      - COMPREFACE_SIMILARITY_THRESHOLD=0.7
-      - FACE_RECOGNITION_ENGINE=compreface
+      - DB_PASSWORD=${DB_PASSWORD:-postgres_password_123}
+      - JWT_SECRET=${JWT_SECRET:-cambia_este_secreto}
+      - FACE_RECOGNITION_ENGINE=descriptor
       - FACE_DISTANCE_THRESHOLD=0.5
-    ports:
-      - "3000:3000"
     volumes:
       - rh_uploads:/app/uploads
+    networks:
+      - internal
+      - ch_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${CLIENT}.rule=Host(`${CLIENT}.${DOMAIN}`)"
+      - "traefik.http.routers.${CLIENT}.entrypoints=web"
+      - "traefik.http.services.${CLIENT}.loadbalancer.server.port=3000"
 
-  compreface:
-    image: exadel/compreface:1.2.0
-    container_name: rh_compreface
-    restart: always
-    volumes:
-      - compreface_data:/compreface
-    ports:
-      - "8000:8000"
+networks:
+  internal:
+    internal: true
+  ch_proxy:
+    external: true
 
 volumes:
   rh_db_data:
   rh_uploads:
-  compreface_data:
