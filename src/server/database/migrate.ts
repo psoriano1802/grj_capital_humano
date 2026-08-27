@@ -12,11 +12,12 @@ const migrate = async () => {
         }
 
         const sqlFiles = [
-            path.join(__dirname, '../../../database/schema.sql'),
-            path.join(__dirname, '../../../database/organizacion.sql'),
-            path.join(__dirname, '../../../database/reclutamiento.sql'),
-            path.join(__dirname, '../../../database/seguridad.sql'),
-            path.join(__dirname, '../../../database/auth.sql'),
+            path.join(__dirname, '../../../database/01_schema.sql'),
+            path.join(__dirname, '../../../database/02_organizacion.sql'),
+            path.join(__dirname, '../../../database/03_reclutamiento.sql'),
+            path.join(__dirname, '../../../database/04_seguridad.sql'),
+            path.join(__dirname, '../../../database/05_contratacion.sql'),
+            path.join(__dirname, '../../../database/06_auth.sql'),
         ];
 
         for (const sqlFile of sqlFiles) {
