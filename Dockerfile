@@ -38,4 +38,4 @@ EXPOSE 3000
 
 # El código original en .ts y los archivos de React (src/) NO se incluyen en esta capa.
 # Solo se incluye la carpeta transpilada `dist`.
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "dist/index.js"]
