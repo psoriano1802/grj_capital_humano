@@ -10,41 +10,62 @@ import VacacionesModule from './components/Vacaciones';
 import IncapacidadesModule from './components/Incapacidades';
 import ContratacionModule from './components/Contratacion';
 import ConfiguracionModule from './components/Configuracion';
-import { SessionProvider, SessionSelector, useSession } from './services/SessionContext';
+import AuthPage from './components/AuthPage';
+import { useSession } from './services/SessionContext';
 import './App.css';
 
 const AppContent: React.FC = () => {
-    const { currentUser, loading, estatusUsuario, perfilAdmin, accessKeys, hasAccess } = useSession();
+    const { user, loading, isAuthenticated, logout } = useSession();
     const [activeMenu, setActiveMenu] = useState('registro-asistencia');
-    const [empleadoDraft, setEmpleadoDraft] = useState<any>(null); // empleado creado desde aspirante para completar datos
+    const [empleadoDraft, setEmpleadoDraft] = useState<any>(null);
     const [notification, setNotification] = useState<{
         type: 'success' | 'error' | 'info';
         message: string;
     } | null>(null);
+    const [showUserMenu, setShowUserMenu] = useState(false);
 
     const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
         setNotification({ type, message });
         setTimeout(() => setNotification(null), 5000);
     };
 
-    // Conjunto de claves permitidas para el menu (undefined = ver todos, p.ej. admin/ sin perfil)
-    const allowedKeys = !currentUser || perfilAdmin ? undefined : new Set<string>(accessKeys);
+    const accessKeys = user?.accessKeys || [];
+    const perfilAdmin = user?.esAdministrador || false;
+    const allowedKeys = perfilAdmin ? undefined : new Set<string>(accessKeys);
     const canViewMenu = !allowedKeys || allowedKeys.has(activeMenu);
-    const isBlocked = estatusUsuario === 'inactivo';
-    const isTempInactive = estatusUsuario === 'temporalmente_inactivo';
+    const isBlocked = user?.estatusUsuario === 'inactivo';
+    const isTempInactive = user?.estatusUsuario === 'temporalmente_inactivo';
+
+    const hasAccess = (clave: string) => {
+        if (!user) return false;
+        if (perfilAdmin) return true;
+        return accessKeys.includes(clave);
+    };
+
+    if (loading) {
+        return (
+            <div className="app-loading">
+                <div className="spinner"></div>
+                <p>Cargando...</p>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return <AuthPage />;
+    }
 
     const renderContent = () => {
         switch (activeMenu) {
-            // ── RECLUTAMIENTO ────────────────────────────────────
             case 'pipeline-reclutamiento':
             case 'vacantes':
             case 'aspirantes':
             case 'catalogos-reclutamiento': {
                 const tabMap: Record<string, 'pipeline' | 'vacantes' | 'aspirantes' | 'catalogos'> = {
                     'pipeline-reclutamiento': 'pipeline',
-                    'vacantes':               'vacantes',
-                    'aspirantes':             'aspirantes',
-                    'catalogos-reclutamiento':'catalogos',
+                    'vacantes': 'vacantes',
+                    'aspirantes': 'aspirantes',
+                    'catalogos-reclutamiento': 'catalogos',
                 };
                 return (
                     <div className="content-section fade-in">
@@ -59,7 +80,6 @@ const AppContent: React.FC = () => {
                 );
             }
 
-            // ── ORGANIZACIÓN ─────────────────────────────────────
             case 'organizacion':
             case 'org-sucursales':
             case 'org-departamentos':
@@ -69,13 +89,13 @@ const AppContent: React.FC = () => {
             case 'org-ubicaciones': {
                 type OrgTabType = 'resumen' | 'sucursales' | 'departamentos' | 'puestos' | 'centros-costo' | 'organigrama' | 'ubicaciones';
                 const orgTabMap: Record<string, OrgTabType> = {
-                    'organizacion':       'resumen',
-                    'org-sucursales':     'sucursales',
-                    'org-departamentos':  'departamentos',
-                    'org-puestos':        'puestos',
-                    'org-centros-costo':  'centros-costo',
-                    'org-organigrama':    'organigrama',
-                    'org-ubicaciones':    'ubicaciones',
+                    'organizacion': 'resumen',
+                    'org-sucursales': 'sucursales',
+                    'org-departamentos': 'departamentos',
+                    'org-puestos': 'puestos',
+                    'org-centros-costo': 'centros-costo',
+                    'org-organigrama': 'organigrama',
+                    'org-ubicaciones': 'ubicaciones',
                 };
                 return (
                     <div className="content-section fade-in">
@@ -83,7 +103,7 @@ const AppContent: React.FC = () => {
                     </div>
                 );
             }
-            // ── EMPLEADOS ───────────────────────────────────────
+
             case 'empleados':
                 return (
                     <div className="content-section fade-in">
@@ -94,7 +114,6 @@ const AppContent: React.FC = () => {
                     </div>
                 );
 
-            // ── ASISTENCIAS ───────────────────────────────────────
             case 'registro-asistencia':
             case 'reporte-asistencias':
                 return (
@@ -110,7 +129,6 @@ const AppContent: React.FC = () => {
                     </div>
                 );
 
-            // ── PERMISOS ──────────────────────────────────────────
             case 'solicitar-permiso':
             case 'mis-permisos':
             case 'aprobar-permisos':
@@ -120,7 +138,6 @@ const AppContent: React.FC = () => {
                     </div>
                 );
 
-            // ── VACACIONES ────────────────────────────────────────
             case 'solicitar-vacaciones':
             case 'mis-vacaciones':
             case 'aprobar-vacaciones':
@@ -131,7 +148,6 @@ const AppContent: React.FC = () => {
                     </div>
                 );
 
-            // ── INCAPACIDADES ──────────────────────────────────────
             case 'registrar-incapacidad':
             case 'mis-incapacidades':
             case 'incapacidades-activas':
@@ -141,7 +157,6 @@ const AppContent: React.FC = () => {
                     </div>
                 );
 
-            // ── CONTRATACIÓN ──────────────────────────────────────
             case 'contratacion':
                 return (
                     <div className="content-section fade-in">
@@ -149,7 +164,6 @@ const AppContent: React.FC = () => {
                     </div>
                 );
 
-            // ── SEGURIDAD (perfiles / accesos / usuarios) ─────────
             case 'seguridad':
                 return (
                     <div className="content-section fade-in">
@@ -190,19 +204,56 @@ const AppContent: React.FC = () => {
                 onMenuSelect={setActiveMenu}
                 activeMenu={activeMenu}
                 allowedKeys={allowedKeys}
-                currentUser={currentUser}
+                currentUser={user}
             />
             <main className="main-content">
                 <div className="container">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-                        <SessionSelector />
+                    {/* User bar */}
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', position: 'relative' }}>
+                        <button
+                            className="user-bar-btn"
+                            onClick={() => setShowUserMenu(!showUserMenu)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', color: 'var(--gray-100)' }}
+                        >
+                            <span>👤</span>
+                            <span style={{ fontSize: '0.9rem' }}>
+                                {user?.nombreCompleto || user?.nombre || 'Usuario'}
+                            </span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>
+                                ({user?.perfilClave || 'sin perfil'})
+                            </span>
+                        </button>
+
+                        {showUserMenu && (
+                            <div className="user-dropdown">
+                                <div className="user-dropdown-header">
+                                    <div style={{ fontWeight: 600 }}>{user?.nombreCompleto}</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>{user?.email}</div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{user?.numeroEmpleado}</div>
+                                </div>
+                                <button
+                                    className="user-dropdown-item"
+                                    onClick={() => { setShowUserMenu(false); }}
+                                >
+                                    🔑 Cambiar contraseña
+                                </button>
+                                <button
+                                    className="user-dropdown-item"
+                                    onClick={() => { logout(); setShowUserMenu(false); }}
+                                >
+                                    🚪 Cerrar sesión
+                                </button>
+                            </div>
+                        )}
                     </div>
+
                     {isTempInactive && !isBlocked && (
                         <div className="notification notification-info">
                             <span className="notification-icon">⚠️</span>
                             <span>Tu usuario está marcado como temporalmente inactivo. Contacta al administrador.</span>
                         </div>
                     )}
+
                     {notification && (
                         <div className={`notification notification-${notification.type}`}>
                             <span className="notification-icon">
@@ -214,12 +265,8 @@ const AppContent: React.FC = () => {
                             </button>
                         </div>
                     )}
-                    {loading ? (
-                        <div className="card empty-state">
-                            <div className="empty-icon">⏳</div>
-                            <h3>Cargando sesión...</h3>
-                        </div>
-                    ) : isBlocked ? (
+
+                    {isBlocked ? (
                         <div className="card empty-state">
                             <div className="empty-icon">🔒</div>
                             <h3>Usuario sin acceso</h3>
@@ -240,10 +287,4 @@ const AppContent: React.FC = () => {
     );
 };
 
-const App: React.FC = () => (
-    <SessionProvider>
-        <AppContent />
-    </SessionProvider>
-);
-
-export default App;
+export default AppContent;

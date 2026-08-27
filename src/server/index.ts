@@ -17,6 +17,7 @@ import contratacionRoutes from './routes/contratacion';
 import perfilesRoutes from './routes/perfiles';
 import accesosRoutes from './routes/accesos';
 import seguridadRoutes from './routes/seguridad';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -85,6 +86,7 @@ app.use('/api/contratacion', contratacionRoutes);
 app.use('/api/perfiles', perfilesRoutes);
 app.use('/api/accesos', accesosRoutes);
 app.use('/api/seguridad', seguridadRoutes);
+app.use('/api/auth', authRoutes);
 
 // Manejo de rutas no encontradas de API
 app.use('/api/*', (req: Request, res: Response) => {

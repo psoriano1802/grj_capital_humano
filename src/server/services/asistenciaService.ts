@@ -32,6 +32,13 @@ export class AsistenciaService {
         return faceRecognitionEngine.identify(datos);
     }
 
+    // Público: para uso en authService (login con face)
+    async identifyFace(datos: string): Promise<{ empleadoId: number; similitud: number } | null> {
+        const match = await this.resolveFaceMatch(datos);
+        if (!match.sujeto) return null;
+        return { empleadoId: parseInt(match.sujeto, 10), similitud: match.similitud };
+    }
+
     private async validarBiometricos(empleadoId: number | null | undefined, tipoRegistro: string, datos: string | undefined): Promise<number> {
         if (!datos) return empleadoId ?? 0;
 

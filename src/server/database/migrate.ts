@@ -16,6 +16,7 @@ const migrate = async () => {
             path.join(__dirname, '../../../database/organizacion.sql'),
             path.join(__dirname, '../../../database/reclutamiento.sql'),
             path.join(__dirname, '../../../database/seguridad.sql'),
+            path.join(__dirname, '../../../database/auth.sql'),
         ];
 
         for (const sqlFile of sqlFiles) {
@@ -35,6 +36,10 @@ const migrate = async () => {
         console.log('   - vacaciones');
         console.log('   - incapacidades');
         console.log('   - usuarios');
+        console.log('   - invitaciones');
+        console.log('   - reset_password_tokens');
+        console.log('   - reset_codigos');
+        console.log('   - sesiones');
         console.log('   - catalogos');
         console.log('   - configuracion');
         console.log('   - vacantes');

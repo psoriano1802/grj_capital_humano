@@ -17,4 +17,5 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           docker network create ch_proxy 2>/dev/null || true
+          rm -f .env
           docker compose up -d --build

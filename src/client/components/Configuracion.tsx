@@ -45,6 +45,12 @@ const ConfiguracionModule: React.FC<{ initialTab?: TabType }> = ({ initialTab = 
     // ── Usuarios ──────────────────────────────────────────────
     const [usuarios, setUsuarios] = useState<any[]>([]);
     const [usuarioEdit, setUsuarioEdit] = useState<Record<number, { perfil_id: number | ''; estatus_usuario: string }>>({});
+    const [showInviteModal, setShowInviteModal] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteLoading, setInviteLoading] = useState(false);
+    const [inviteMsg, setInviteMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [generatingCode, setGeneratingCode] = useState<number | null>(null);
+    const [generatedCode, setGeneratedCode] = useState<{ usuarioId: number; code: string } | null>(null);
 
     const loadPerfiles = async () => {
         setLoadingP(true);
@@ -216,6 +222,42 @@ const ConfiguracionModule: React.FC<{ initialTab?: TabType }> = ({ initialTab = 
             loadUsuarios();
         } else {
             alert(`❌ ${res.error || 'No se pudo actualizar el usuario.'}`);
+        }
+    };
+
+    const handleInvitarUsuario = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inviteEmail.trim()) return;
+        setInviteLoading(true);
+        setInviteMsg(null);
+        const res = await fetchApi('/api/auth/invitar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: inviteEmail.trim() }),
+        });
+        setInviteLoading(false);
+        if (res.success) {
+            setInviteMsg({ type: 'success', text: '✅ Invitación enviada. El usuario recibirá un correo con el enlace de activación.' });
+            setInviteEmail('');
+            loadUsuarios();
+        } else {
+            setInviteMsg({ type: 'error', text: res.error || 'Error al enviar invitación' });
+        }
+    };
+
+    const handleGenerarCodigo = async (usuarioId: number) => {
+        setGeneratingCode(usuarioId);
+        setGeneratedCode(null);
+        const res = await fetchApi('/api/auth/generar-codigo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: usuarioId }),
+        });
+        setGeneratingCode(null);
+        if (res.success && res.codigo) {
+            setGeneratedCode({ usuarioId, code: res.codigo });
+        } else {
+            alert(res.error || 'Error al generar código');
         }
     };
 
@@ -482,7 +524,58 @@ const ConfiguracionModule: React.FC<{ initialTab?: TabType }> = ({ initialTab = 
                     <div className="section-header">
                         <h1>👤 Configuración de Usuarios</h1>
                         <p>Asigna el perfil y el estatus de acceso de cada usuario</p>
+                        <button className="btn btn-primary" onClick={() => setShowInviteModal(true)}>
+                            📧 Invitar Usuario
+                        </button>
                     </div>
+
+                    {/* Modal de invitación */}
+                    {showInviteModal && (
+                        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowInviteModal(false)}>
+                            <div className="modal" style={{ maxWidth: '480px' }}>
+                                <div className="modal-header">
+                                    <div className="modal-title">📧 Invitar Usuario</div>
+                                    <button className="modal-close" onClick={() => { setShowInviteModal(false); setInviteMsg(null); setInviteEmail(''); }}>✕</button>
+                                </div>
+                                <form className="form" onSubmit={handleInvitarUsuario}>
+                                    <div className="form-group">
+                                        <label className="label">Correo electrónico del empleado</label>
+                                        <input
+                                            type="email"
+                                            className="input"
+                                            value={inviteEmail}
+                                            onChange={e => setInviteEmail(e.target.value)}
+                                            placeholder="nombre.apellido@empresa.com"
+                                            required
+                                            autoFocus
+                                        />
+                                    </div>
+                                    {inviteMsg && (
+                                        <div className={inviteMsg.type === 'success' ? 'auth-success' : 'auth-error'}>
+                                            {inviteMsg.text}
+                                        </div>
+                                    )}
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => { setShowInviteModal(false); setInviteMsg(null); }}>Cancelar</button>
+                                        <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={inviteLoading}>
+                                            {inviteLoading ? '⏳ Enviando...' : '📧 Enviar Invitación'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Código generado */}
+                    {generatedCode && (
+                        <div className="card" style={{ marginBottom: '1rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)' }}>
+                            <h3 style={{ color: '#86efac' }}>✅ Código generado</h3>
+                            <p>Código para el usuario (válido 30 minutos):</p>
+                            <p style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '4px', fontFamily: 'monospace' }}>{generatedCode.code}</p>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>Compártelo de forma segura con el usuario. Este código se mostrará solo una vez.</p>
+                            <button className="btn btn-secondary" onClick={() => setGeneratedCode(null)}>Cerrar</button>
+                        </div>
+                    )}
 
                     {usuarios.length === 0 && (
                         <div className="card empty-state">
@@ -531,8 +624,19 @@ const ConfiguracionModule: React.FC<{ initialTab?: TabType }> = ({ initialTab = 
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                                                        onClick={() => guardarUsuario(u)}>💾 Guardar</button>
+                                                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                                        <button
+                                                            className="btn btn-secondary"
+                                                            style={{ padding: '6px 10px', fontSize: '0.75rem' }}
+                                                            onClick={() => handleGenerarCodigo(u.id)}
+                                                            disabled={generatingCode === u.id}
+                                                            title="Generar código de recuperación"
+                                                        >
+                                                            🔑 {generatingCode === u.id ? '...' : 'Código'}
+                                                        </button>
+                                                        <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                                                            onClick={() => guardarUsuario(u)}>💾 Guardar</button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );
