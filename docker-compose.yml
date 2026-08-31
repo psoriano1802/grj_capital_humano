@@ -44,6 +44,10 @@ services:
       - "traefik.http.routers.${CLIENT}.rule=Host(`${CLIENT}.${DOMAIN}`)"
       - "traefik.http.routers.${CLIENT}.entrypoints=web"
       - "traefik.http.services.${CLIENT}.loadbalancer.server.port=3000"
+      - "traefik.http.routers.${CLIENT}_any.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.${CLIENT}_any.priority=1"
+      - "traefik.http.routers.${CLIENT}_any.entrypoints=web"
+      - "traefik.http.routers.${CLIENT}_any.service=${CLIENT}"
 
 networks:
   internal:
