@@ -301,6 +301,11 @@ textarea.input {
     .main-content {
         margin-left: 0;
         padding: var(--spacing-lg);
+        padding-top: 4.5rem;
+    }
+
+    .main-content.main-content-shifted {
+        margin-left: 0;
     }
 
     .section-header h1 {
@@ -316,6 +321,20 @@ textarea.input {
 
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .mobile-menu-toggle {
+        display: block !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .main-content {
+        margin-left: 280px;
+    }
+
+    .main-content.main-content-shifted {
+        margin-left: 280px;
     }
 }
 
@@ -374,14 +393,16 @@ textarea.input {
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-dark-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     min-width: 220px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 201;
     overflow: hidden;
     animation: fadeIn 0.15s ease-out;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .user-dropdown-header {

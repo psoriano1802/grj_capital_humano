@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import BiometricoConfig from './components/BiometricoConfig';
 import ReclutamientoModule from './components/Reclutamiento';
@@ -23,6 +23,18 @@ const AppContent: React.FC = () => {
         message: string;
     } | null>(null);
     const [showUserMenu, setShowUserMenu] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const userMenuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setShowUserMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
         setNotification({ type, message });
@@ -205,11 +217,35 @@ const AppContent: React.FC = () => {
                 activeMenu={activeMenu}
                 allowedKeys={allowedKeys}
                 currentUser={user}
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
             />
-            <main className="main-content">
+            <main className={`main-content ${sidebarOpen ? 'main-content-shifted' : ''}`}>
                 <div className="container">
+                    {/* Mobile menu toggle */}
+                    <button
+                        className="mobile-menu-toggle"
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        style={{
+                            display: 'none',
+                            position: 'fixed',
+                            top: '1rem',
+                            left: '1rem',
+                            zIndex: 1001,
+                            padding: '0.5rem',
+                            borderRadius: '8px',
+                            background: 'var(--bg-dark-secondary)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            color: 'var(--gray-100)',
+                            cursor: 'pointer',
+                            fontSize: '1.5rem'
+                        }}
+                    >
+                        {sidebarOpen ? '✕' : '☰'}
+                    </button>
+
                     {/* User bar */}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', position: 'relative' }}>
+                    <div ref={userMenuRef} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem', position: 'relative', zIndex: 200 }}>
                         <button
                             className="user-bar-btn"
                             onClick={() => setShowUserMenu(!showUserMenu)}
@@ -225,7 +261,7 @@ const AppContent: React.FC = () => {
                         </button>
 
                         {showUserMenu && (
-                            <div className="user-dropdown">
+                            <div className="user-dropdown" style={{ zIndex: 201 }}>
                                 <div className="user-dropdown-header">
                                     <div style={{ fontWeight: 600 }}>{user?.nombreCompleto}</div>
                                     <div style={{ fontSize: '0.8rem', color: 'var(--gray-400)' }}>{user?.email}</div>

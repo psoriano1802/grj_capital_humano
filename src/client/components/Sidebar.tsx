@@ -11,8 +11,10 @@ interface MenuItem {
 interface SidebarProps {
     onMenuSelect: (menuId: string) => void;
     activeMenu: string;
-    allowedKeys?: Set<string>; // claves de modulos permitidos; si es undefined se muestran todos
+    allowedKeys?: Set<string>;
     currentUser?: any;
+    isOpen?: boolean;
+    onClose?: () => void;
 }
 
 const menuItems: MenuItem[] = [
@@ -97,7 +99,7 @@ const menuItems: MenuItem[] = [
     }
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ onMenuSelect, activeMenu, allowedKeys, currentUser }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onMenuSelect, activeMenu, allowedKeys, currentUser, isOpen, onClose }) => {
     const [expandedMenus, setExpandedMenus] = useState<string[]>(['recursos-humanos']);
 
     const toggleMenu = (menuId: string) => {
@@ -121,62 +123,65 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuSelect, activeMenu, allowedKeys
         : menuItems;
 
     return (
-        <aside className="sidebar">
-            <div className="sidebar-header">
-                <div className="logo">
-                    <img src="/rh-icon.svg" alt="RH" style={{ width: 28, height: 28, borderRadius: 6 }} />
-                    <h1 className="logo-text">Sistema RH</h1>
+        <>
+            {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
+            <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
+                <div className="sidebar-header">
+                    <div className="logo">
+                        <img src="/rh-icon.svg" alt="RH" style={{ width: 28, height: 28, borderRadius: 6 }} />
+                        <h1 className="logo-text">Sistema RH</h1>
+                    </div>
                 </div>
-            </div>
 
-            <nav className="sidebar-nav">
-                {visibleMenus.map(item => (
-                    <div key={item.id} className="menu-section">
-                        <button
-                            className={`menu-item ${expandedMenus.includes(item.id) ? 'expanded' : ''}`}
-                            onClick={() => toggleMenu(item.id)}
-                        >
-                            <span className="menu-icon">{item.icon}</span>
-                            <span className="menu-label">{item.label}</span>
-                            {item.children && (
-                                <span className="menu-arrow">
-                                    {expandedMenus.includes(item.id) ? '▼' : '▶'}
-                                </span>
+                <nav className="sidebar-nav">
+                    {visibleMenus.map(item => (
+                        <div key={item.id} className="menu-section">
+                            <button
+                                className={`menu-item ${expandedMenus.includes(item.id) ? 'expanded' : ''}`}
+                                onClick={() => toggleMenu(item.id)}
+                            >
+                                <span className="menu-icon">{item.icon}</span>
+                                <span className="menu-label">{item.label}</span>
+                                {item.children && (
+                                    <span className="menu-arrow">
+                                        {expandedMenus.includes(item.id) ? '▼' : '▶'}
+                                    </span>
+                                )}
+                            </button>
+
+                            {item.children && expandedMenus.includes(item.id) && (
+                                <div className="submenu">
+                                    {item.children.map(child => (
+                                        <button
+                                            key={child.id}
+                                            className={`submenu-item ${activeMenu === child.id ? 'active' : ''}`}
+                                            onClick={() => { onMenuSelect(child.id); if (onClose) onClose(); }}
+                                        >
+                                            <span className="submenu-icon">{child.icon}</span>
+                                            <span className="submenu-label">{child.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
                             )}
-                        </button>
-
-                        {item.children && expandedMenus.includes(item.id) && (
-                            <div className="submenu">
-                                {item.children.map(child => (
-                                    <button
-                                        key={child.id}
-                                        className={`submenu-item ${activeMenu === child.id ? 'active' : ''}`}
-                                        onClick={() => onMenuSelect(child.id)}
-                                    >
-                                        <span className="submenu-icon">{child.icon}</span>
-                                        <span className="submenu-label">{child.label}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </nav>
-
-            <div className="sidebar-footer">
-                <div className="user-info">
-                    <div className="user-avatar">👤</div>
-                    <div className="user-details">
-                        <div className="user-name">
-                            {currentUser
-                                ? `${currentUser.nombre} ${currentUser.apellido_paterno}`
-                                : 'Usuario'}
                         </div>
-                        <div className="user-role">{currentUser?.perfil_nombre || currentUser?.perfil_clave || 'Sin perfil'}</div>
+                    ))}
+                </nav>
+
+                <div className="sidebar-footer">
+                    <div className="user-info">
+                        <div className="user-avatar">👤</div>
+                        <div className="user-details">
+                            <div className="user-name">
+                                {currentUser
+                                    ? `${currentUser.nombre} ${currentUser.apellido_paterno}`
+                                    : 'Usuario'}
+                            </div>
+                            <div className="user-role">{currentUser?.perfil_nombre || currentUser?.perfil_clave || 'Sin perfil'}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </aside>
+            </aside>
+        </>
     );
 };
 

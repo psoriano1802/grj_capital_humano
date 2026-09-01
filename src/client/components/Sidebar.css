@@ -213,12 +213,35 @@
     color: var(--gray-400);
 }
 
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+        width: 280px;
+    }
+
+    .sidebar.sidebar-open {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        display: block;
     }
 
     .submenu-item {
@@ -227,5 +250,11 @@
 
     .submenu-item::before {
         left: 1.5rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        left: 0;
     }
 }
