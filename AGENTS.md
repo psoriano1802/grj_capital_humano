@@ -17,6 +17,24 @@ npm run build          # tsc -p tsconfig.server.json && vite build
 - El build usa dos proyectos TS: el servidor se compila con `tsconfig.server.json`; el frontend con Vite. El proxy de dev del cliente envía `/api` al backend en el 3000.
 - `npm run db:migrate` ejecuta `src/server/database/migrate.ts`, que aplica los archivos SQL en `database/` (incluido `database/organizacion.sql` y `database/seguridad.sql`). También se puede aplicar manualmente: `psql -p <puerto> -U postgres -d rh_management -f database/<archivo>.sql`.
 
+## Bugs críticos conocidos (y su solución)
+
+### App muestra "Cargando..." infinito
+
+**Causa**: `src/client/main.tsx` montaba `<App />` sin envolverlo en `<SessionProvider>`. Como `AppContent` usa `useSession()`, sin el provider devuelve contexto default con `loading: true` fijo — la app se queda en el spinner para siempre.
+
+**Fix** (ya aplicado): `main.tsx` ahora envuelve `<App />` en `<SessionProvider>`.
+
+### Login no funciona con seeds
+
+**Causa**: `database/07_seed.sql` insertaba en columnas legacy (`username`, `rol`) que no existen en el schema actual de `usuarios` (`email`, `password_hash`, `activo`, `must_change_password`). Además usaba password hashes falsos.
+
+**Fix** (ya aplicado): `07_seed.sql` ahora inserta con las columnas correctas. Cuenta admin funcional:
+- Email: `maria.rodriguez@empresa.com`
+- Password: `Admin123!` (bcrypt hash real, `activo=true`, `must_change_password=false`)
+
+Para regenerar el hash bcrypt: `node -e "const bcrypt = require('bcryptjs'); bcrypt.hash('TuPassword', 12).then(h => console.log(h))"`
+
 ## Área de trabajo activa: Módulo de Organización
 
 Este módulo es el enfoque actual y **no** está descrito en `README.md`/`COMMANDS.md`.

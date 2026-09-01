@@ -6,15 +6,17 @@ INSERT INTO empleados (numero_empleado, nombre, apellido_paterno, apellido_mater
 ('EMP002', 'María', 'Rodríguez', 'Martínez', 'maria.rodriguez@empresa.com', '5551234568', '1988-08-22', '2019-03-15', 'Gerente de RH', 'RRHH', 55000.00),
 ('EMP003', 'Carlos', 'Hernández', 'Sánchez', 'carlos.hernandez@empresa.com', '5551234569', '1992-11-30', '2021-06-01', 'Analista de Ventas', 'VENTAS', 35000.00),
 ('EMP004', 'Ana', 'Martínez', 'González', 'ana.martinez@empresa.com', '5551234570', '1995-03-12', '2022-02-20', 'Asistente Administrativa', 'ADMIN', 28000.00),
-('EMP005', 'Luis', 'López', 'Pérez', 'luis.lopez@empresa.com', '5551234571', '1987-07-08', '2018-09-10', 'Coordinador de IT', 'IT', 48000.00);
+('EMP005', 'Luis', 'López', 'Pérez', 'luis.lopez@empresa.com', '5551234571', '1987-07-08', '2018-09-10', 'Coordinador de IT', 'IT', 48000.00)
+ON CONFLICT (numero_empleado) DO NOTHING;
 
--- Insertar usuarios para los empleados
-INSERT INTO usuarios (empleado_id, username, password_hash, rol) VALUES
-(1, 'juan.garcia', '$2b$10$YourHashedPasswordHere1', 'empleado'),
-(2, 'maria.rodriguez', '$2b$10$YourHashedPasswordHere2', 'rh'),
-(3, 'carlos.hernandez', '$2b$10$YourHashedPasswordHere3', 'empleado'),
-(4, 'ana.martinez', '$2b$10$YourHashedPasswordHere4', 'empleado'),
-(5, 'luis.lopez', '$2b$10$YourHashedPasswordHere5', 'supervisor');
+-- Insertar usuarios para los empleados (schema actual: email, password_hash, activo, must_change_password)
+INSERT INTO usuarios (empleado_id, email, password_hash, activo, must_change_password) VALUES
+(1, 'juan.garcia@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
+(2, 'maria.rodriguez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
+(3, 'carlos.hernandez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
+(4, 'ana.martinez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
+(5, 'luis.lopez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false)
+ON CONFLICT (empleado_id) DO NOTHING;
 
 -- Insertar algunas asistencias de ejemplo
 INSERT INTO asistencias (empleado_id, fecha, hora_entrada, hora_salida, tipo_registro, estatus) VALUES
