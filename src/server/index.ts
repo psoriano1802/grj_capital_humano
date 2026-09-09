@@ -18,6 +18,7 @@ import perfilesRoutes from './routes/perfiles';
 import accesosRoutes from './routes/accesos';
 import seguridadRoutes from './routes/seguridad';
 import authRoutes from './routes/auth';
+import capacitacionesRoutes from './routes/capacitaciones';
 
 dotenv.config();
 
@@ -87,6 +88,7 @@ app.use('/api/perfiles', perfilesRoutes);
 app.use('/api/accesos', accesosRoutes);
 app.use('/api/seguridad', seguridadRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/capacitaciones', capacitacionesRoutes);
 
 // Manejo de rutas no encontradas de API
 app.use('/api/*', (req: Request, res: Response) => {
@@ -144,6 +146,7 @@ const startServer = async () => {
             console.log(`   - GET  /api/reclutamiento/pipeline`);
             console.log(`   - GET  /api/reclutamiento/aspirantes`);
             console.log(`   - GET  /api/reclutamiento/catalogos`);
+            console.log(`   - GET/POST/PUT/DELETE /api/capacitaciones`);
             console.log('\n');
         });
     } catch (error) {

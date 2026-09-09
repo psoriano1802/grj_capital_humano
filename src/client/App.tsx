@@ -10,6 +10,7 @@ import VacacionesModule from './components/Vacaciones';
 import IncapacidadesModule from './components/Incapacidades';
 import ContratacionModule from './components/Contratacion';
 import ConfiguracionModule from './components/Configuracion';
+import CapacitacionesModule from './components/Capacitaciones';
 import AuthPage from './components/AuthPage';
 import { useSession } from './services/SessionContext';
 import './App.css';
@@ -91,6 +92,13 @@ const AppContent: React.FC = () => {
                     </div>
                 );
             }
+
+            case 'capacitaciones':
+                return (
+                    <div className="content-section fade-in">
+                        <CapacitacionesModule />
+                    </div>
+                );
 
             case 'organizacion':
             case 'org-sucursales':

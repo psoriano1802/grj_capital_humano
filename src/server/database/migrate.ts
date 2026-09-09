@@ -18,6 +18,7 @@ const migrate = async () => {
             path.join(__dirname, '../../../database/04_seguridad.sql'),
             path.join(__dirname, '../../../database/05_contratacion.sql'),
             path.join(__dirname, '../../../database/06_auth.sql'),
+            path.join(__dirname, '../../../database/08_capacitaciones.sql'),
         ];
 
         for (const sqlFile of sqlFiles) {

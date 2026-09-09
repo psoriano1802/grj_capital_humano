@@ -29,7 +29,7 @@ const menuItems: MenuItem[] = [
             { id: 'catalogos-reclutamiento',label: 'Catálogos',       icon: '📚' },
         ]
     },
-    {
+            {
         id: 'recursos-humanos',
         label: 'Recursos humanos',
         icon: '👥',
@@ -42,6 +42,7 @@ const menuItems: MenuItem[] = [
             { id: 'org-centros-costo', label: 'Centros de Costo', icon: '💰' },
             { id: 'org-organigrama',   label: 'Organigrama',  icon: '🌲' },
             { id: 'org-ubicaciones',   label: 'Ubicaciones',  icon: '📍' },
+            { id: 'capacitaciones',     label: 'Capacitaciones', icon: '📚' },
             { id: 'contratacion',      label: 'Contratación', icon: '🤝' },
             // 👇 NÓMINA — descomenta cuando se implemente el módulo de nómina
             // { id: 'nomina',            label: 'Nómina',       icon: '💵' },
