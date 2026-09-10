@@ -225,7 +225,7 @@ export class AuthService {
                 `SELECT u.id as usuario_id, u.email, u.must_change_password,
                         e.id as empleado_id, e.numero_empleado, e.nombre, e.apellido_paterno,
                         e.apellido_materno, e.puesto, e.departamento, e.foto_url,
-                        e.estatus_usuario,
+                        e.estatus_usuario, e.perfil_id,
                         p.clave as perfil_clave, p.nombre as perfil_nombre, p.es_administrador
                  FROM usuarios u
                  JOIN empleados e ON e.id = u.empleado_id
