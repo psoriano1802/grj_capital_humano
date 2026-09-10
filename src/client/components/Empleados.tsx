@@ -49,14 +49,28 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
     const [searchTerm, setSearchTerm] = useState('');
 
     const [catalogosContratacion, setCatalogosContratacion] = useState<any>({});
+    const [puestosFiltrados, setPuestosFiltrados] = useState<any[]>([]);
 
     const [form, setForm] = useState<Empleado>({
         numero_empleado: '', nombre: '', apellido_paterno: '', apellido_materno: '',
         email: '', telefono: '', fecha_nacimiento: '', fecha_ingreso: '',
         puesto: '', departamento: '', salario: 0,
-        tipo_contratacion: '', tipo_empleado: '', tipo_jornada: '',
-        turno: '', horario_laboral: '', esquema_pago: '', tipo_contrato: ''
+        tipo_contratacion: '', tipo_empleado: '',
+        turno: '', horario_laboral: '', esquema_pago: ''
     });
+
+    const filtrarPuestosPorDepartamento = useCallback((deptoNombre: string, deptos: any[], ptos: any[]) => {
+        if (!deptoNombre) {
+            setPuestosFiltrados(ptos);
+            return;
+        }
+        const depto = deptos.find(d => d.nombre === deptoNombre);
+        if (depto) {
+            setPuestosFiltrados(ptos.filter(p => p.departamento_id === depto.id));
+        } else {
+            setPuestosFiltrados(ptos);
+        }
+    }, []);
 
     const [datosBiometricos, setDatosBiometricos] = useState<string | null>(null);
     const [showBiometricCapture, setShowBiometricCapture] = useState(false);
@@ -70,13 +84,20 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
             fetchApi('/api/contratacion/todos-catalogos')
         ]);
         if (empRes.success) setEmpleados(empRes.data);
-        if (ptoRes.success) setPuestos(ptoRes.data);
+        if (ptoRes.success) {
+            setPuestos(ptoRes.data);
+            setPuestosFiltrados(ptoRes.data);
+        }
         if (depRes.success) setDepartamentos(depRes.data);
         if (catRes.success) setCatalogosContratacion(catRes.data);
         setLoading(false);
-    }, []);
+    }, [puestos, departamentos]);
 
     useEffect(() => { loadData(); }, [loadData]);
+
+    useEffect(() => {
+        filtrarPuestosPorDepartamento(form.departamento, departamentos, puestos);
+    }, [form.departamento, departamentos, puestos, filtrarPuestosPorDepartamento]);
 
     // Si llega un empleado desde el modulo de Reclutamiento (aspirante contratado),
     // abrir su edicion para completar los datos faltantes.
@@ -100,8 +121,8 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
             nombre: '', apellido_paterno: '', apellido_materno: '',
             email: '', telefono: '', fecha_nacimiento: '', fecha_ingreso: new Date().toISOString().split('T')[0],
             puesto: '', departamento: '', salario: 0,
-            tipo_contratacion: '', tipo_empleado: '', tipo_jornada: '',
-            turno: '', horario_laboral: '', esquema_pago: '', tipo_contrato: ''
+            tipo_contratacion: '', tipo_empleado: '',
+            turno: '', horario_laboral: '', esquema_pago: ''
         });
         setDatosBiometricos(null);
         setShowBiometricCapture(false);
@@ -287,7 +308,7 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
                             <div className="grid grid-2">
                                 <div className="form-group">
                                     <label className="label">Departamento *</label>
-                                    <select className="input" required value={form.departamento} onChange={e => setForm({...form, departamento: e.target.value})}>
+                                    <select className="input" required value={form.departamento} onChange={e => { setForm(prev => ({ ...prev, departamento: e.target.value, puesto: '' })); }}>
                                         <option value="">— Seleccionar —</option>
                                         {departamentos.map(d => <option key={d.id} value={d.nombre}>{d.nombre}</option>)}
                                     </select>
@@ -296,7 +317,7 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
                                     <label className="label">Puesto *</label>
                                     <select className="input" required value={form.puesto} onChange={e => setForm({...form, puesto: e.target.value})}>
                                         <option value="">— Seleccionar —</option>
-                                        {puestos.map(p => <option key={p.id} value={p.nombre}>{p.nombre}</option>)}
+                                        {puestosFiltrados.map(p => <option key={p.id} value={p.nombre}>{p.nombre}</option>)}
                                     </select>
                                 </div>
                             </div>
@@ -341,17 +362,11 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
 
                             <div className="grid grid-2">
                                 <div className="form-group">
-                                    <label className="label">Jornada y Turno</label>
-                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                        <select className="input" style={{flex: 1}} value={form.tipo_jornada} onChange={e => setForm({...form, tipo_jornada: e.target.value})}>
-                                            <option value="">— Jornada —</option>
-                                            {catalogosContratacion.tipos_jornada?.map((c: any) => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
-                                        </select>
-                                        <select className="input" style={{flex: 1}} value={form.turno} onChange={e => setForm({...form, turno: e.target.value})}>
-                                            <option value="">— Turno —</option>
-                                            {catalogosContratacion.turnos?.map((c: any) => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
-                                        </select>
-                                    </div>
+                                    <label className="label">Turno</label>
+                                    <select className="input" value={form.turno} onChange={e => setForm({...form, turno: e.target.value})}>
+                                        <option value="">— Seleccionar —</option>
+                                        {catalogosContratacion.turnos?.map((c: any) => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
+                                    </select>
                                 </div>
                                 <div className="form-group">
                                     <label className="label">Horario Laboral</label>

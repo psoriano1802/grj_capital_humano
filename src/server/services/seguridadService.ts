@@ -187,7 +187,7 @@ export class SeguridadService {
              e.estatus_usuario, e.perfil_id,
              p.clave AS perfil_clave, p.nombre AS perfil_nombre,
              p.es_administrador AS perfil_admin,
-             u.id AS usuario_id, u.username, u.rol
+             u.id AS usuario_id, u.email AS usuario_email, u.activo AS usuario_activo
       FROM empleados e
       LEFT JOIN perfiles p ON p.id = e.perfil_id
       LEFT JOIN usuarios u ON u.empleado_id = e.id

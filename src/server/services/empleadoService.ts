@@ -172,6 +172,12 @@ export class EmpleadoService {
             [empleado.id, aspiranteId]
         );
 
+        // Transferir biometrics del aspirante (huella/rostro sin empleado_id) al nuevo empleado
+        await pool.query(
+            `UPDATE biometricos SET empleado_id = $1 WHERE empleado_id IS NULL AND activo = true`,
+            [empleado.id]
+        );
+
         return { empleado, ya_existia: false };
     }
 
