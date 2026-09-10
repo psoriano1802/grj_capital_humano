@@ -619,7 +619,7 @@ const OrganigramaView: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState<any>(null);
-    const [form, setForm] = useState({ puesto_id: '', puesto_jefe_id: '', departamento_id: '', nivel_jerarquico: '1', es_jefe_directo: true });
+    const [form, setForm] = useState({ puesto_id: '', puesto_jefe_id: '', departamento_id: '', nivel_jerarquico: '1', es_jefe_directo: true, imagen_url: '' });
 
     const load = useCallback(() => {
         Promise.all([apiFetch('/organigrama'), apiFetch('/puestos'), apiFetch('/departamentos')]).then(([o, p, d]) => {
@@ -633,7 +633,7 @@ const OrganigramaView: React.FC = () => {
 
     const openNew = () => {
         setEditing(null);
-        setForm({ puesto_id: '', puesto_jefe_id: '', departamento_id: '', nivel_jerarquico: '1', es_jefe_directo: true });
+        setForm({ puesto_id: '', puesto_jefe_id: '', departamento_id: '', nivel_jerarquico: '1', es_jefe_directo: true, imagen_url: '' });
         setShowForm(true);
     };
 
@@ -645,6 +645,7 @@ const OrganigramaView: React.FC = () => {
             departamento_id: r.departamento_id ?? '',
             nivel_jerarquico: String(r.nivel_jerarquico ?? 1),
             es_jefe_directo: r.es_jefe_directo ?? true,
+            imagen_url: r.imagen_url ?? '',
         });
         setShowForm(true);
     };
@@ -707,6 +708,15 @@ const OrganigramaView: React.FC = () => {
         return (
             <div className="org-tree-node">
                 <div className="org-tree-card">
+                    {node.imagen_url ? (
+                        <div className="org-tree-img-wrapper">
+                            <img src={node.imagen_url} alt={displayName} className="org-tree-img" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        </div>
+                    ) : (
+                        <div className="org-tree-avatar-placeholder">
+                            {displayName.charAt(0).toUpperCase()}
+                        </div>
+                    )}
                     <div className="org-tree-title">{displayName}</div>
                     <div className="org-tree-level">
                         <Badge text={displayLevel} color={(NIVEL_COLORS[displayLevel] ?? 'gray') as any} />
@@ -786,10 +796,21 @@ const OrganigramaView: React.FC = () => {
                                     {departamentos.map(d => <option key={d.id} value={d.id}>{d.nombre}</option>)}
                                 </select>
                             </div>
-                            <div className="org-form-group">
-                                <label className="org-label">Nivel jerárquico</label>
-                                <input type="number" min={1} max={10} className="org-input" value={form.nivel_jerarquico} onChange={e => setForm({ ...form, nivel_jerarquico: e.target.value })} />
-                            </div>
+                        <div className="org-form-group">
+                            <label className="org-label">Nivel jerárquico</label>
+                            <input type="number" min={1} max={10} className="org-input" value={form.nivel_jerarquico} onChange={e => setForm({ ...form, nivel_jerarquico: e.target.value })} />
+                        </div>
+                        <div className="org-form-group">
+                            <label className="org-check">
+                                <input type="checkbox" checked={!!form.es_jefe_directo} onChange={e => setForm({ ...form, es_jefe_directo: e.target.checked })} />
+                                Jefe directo
+                            </label>
+                        </div>
+                        <div className="org-form-group" style={{ gridColumn: '1/-1' }}>
+                            <label className="org-label">URL de imagen del puesto</label>
+                            <input type="url" className="org-input" placeholder="https://ejemplo.com/foto.jpg" value={form.imagen_url} onChange={e => setForm({ ...form, imagen_url: e.target.value })} />
+                            <small style={{ color: 'var(--gray-500)', fontSize: '0.8rem' }}>Ingresa una URL pública de imagen (jpg, png)</small>
+                        </div>
                         </div>
                         <div className="org-form-group">
                             <label className="org-check">

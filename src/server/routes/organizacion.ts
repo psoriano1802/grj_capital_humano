@@ -222,14 +222,14 @@ const hasCycle = async (puesto_id: number | string, puesto_jefe_id: number | str
 
 router.post('/organigrama', async (req: Request, res: Response) => {
     try {
-        const { puesto_id, puesto_jefe_id, departamento_id, nivel_jerarquico, es_jefe_directo } = req.body;
+        const { puesto_id, puesto_jefe_id, departamento_id, nivel_jerarquico, es_jefe_directo, imagen_url } = req.body;
         if (await hasCycle(puesto_id, puesto_jefe_id)) {
             return res.status(400).json({ success: false, error: 'La relación crearía un ciclo jerárquico' });
         }
         const { rows } = await q(
-            `INSERT INTO organigrama (puesto_id, puesto_jefe_id, departamento_id, nivel_jerarquico, es_jefe_directo)
-             VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-            [puesto_id, puesto_jefe_id || null, departamento_id || null, nivel_jerarquico ?? 1, es_jefe_directo ?? true]
+            `INSERT INTO organigrama (puesto_id, puesto_jefe_id, departamento_id, nivel_jerarquico, es_jefe_directo, imagen_url)
+             VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+            [puesto_id, puesto_jefe_id || null, departamento_id || null, nivel_jerarquico ?? 1, es_jefe_directo ?? true, imagen_url || null]
         );
         res.status(201).json({ success: true, data: rows[0], message: 'Relación jerárquica creada' });
     } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
@@ -237,7 +237,7 @@ router.post('/organigrama', async (req: Request, res: Response) => {
 
 router.put('/organigrama/:id', async (req: Request, res: Response) => {
     try {
-        const { puesto_jefe_id, departamento_id, nivel_jerarquico, es_jefe_directo, vigente } = req.body;
+        const { puesto_jefe_id, departamento_id, nivel_jerarquico, es_jefe_directo, vigente, imagen_url } = req.body;
         const cur = await q('SELECT puesto_id FROM organigrama WHERE id=$1', [req.params.id]);
         if (cur.rowCount === 0) return res.status(404).json({ success: false, error: 'Relación jerárquica no encontrada' });
         if (await hasCycle(cur.rows[0].puesto_id, puesto_jefe_id)) {
@@ -245,9 +245,9 @@ router.put('/organigrama/:id', async (req: Request, res: Response) => {
         }
         const { rows } = await q(
             `UPDATE organigrama
-             SET puesto_jefe_id=$1, departamento_id=$2, nivel_jerarquico=$3, es_jefe_directo=$4, vigente=$5
-             WHERE id=$6 RETURNING *`,
-            [puesto_jefe_id || null, departamento_id || null, nivel_jerarquico ?? 1, es_jefe_directo ?? true, vigente ?? true, req.params.id]
+             SET puesto_jefe_id=$1, departamento_id=$2, nivel_jerarquico=$3, es_jefe_directo=$4, vigente=$5, imagen_url=$6
+             WHERE id=$7 RETURNING *`,
+            [puesto_jefe_id || null, departamento_id || null, nivel_jerarquico ?? 1, es_jefe_directo ?? true, vigente ?? true, imagen_url || null, req.params.id]
         );
         res.json({ success: true, data: rows[0], message: 'Relación jerárquica actualizada' });
     } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
