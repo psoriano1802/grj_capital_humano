@@ -11,11 +11,11 @@ ON CONFLICT (numero_empleado) DO NOTHING;
 
 -- Insertar usuarios para los empleados (schema actual: email, password_hash, activo, must_change_password)
 INSERT INTO usuarios (empleado_id, email, password_hash, activo, must_change_password) VALUES
-(1, 'juan.garcia@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
-(2, 'maria.rodriguez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
-(3, 'carlos.hernandez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
-(4, 'ana.martinez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false),
-(5, 'luis.lopez@empresa.com', '$2b$12$5B1fGHV2al5quzEBmXr4f.gKX/nGb1igkMo/uTVx31oTR6bhrdE/G', true, false)
+(1, 'juan.garcia@empresa.com', '$2b$12$1tCI77Ez6PRV59B2/Zyn3uooKYYS1NbOo9OQWtAO7XoR6NKeZ3rKy', true, false),
+(2, 'maria.rodriguez@empresa.com', '$2b$12$1tCI77Ez6PRV59B2/Zyn3uooKYYS1NbOo9OQWtAO7XoR6NKeZ3rKy', true, false),
+(3, 'carlos.hernandez@empresa.com', '$2b$12$1tCI77Ez6PRV59B2/Zyn3uooKYYS1NbOo9OQWtAO7XoR6NKeZ3rKy', true, false),
+(4, 'ana.martinez@empresa.com', '$2b$12$1tCI77Ez6PRV59B2/Zyn3uooKYYS1NbOo9OQWtAO7XoR6NKeZ3rKy', true, false),
+(5, 'luis.lopez@empresa.com', '$2b$12$1tCI77Ez6PRV59B2/Zyn3uooKYYS1NbOo9OQWtAO7XoR6NKeZ3rKy', true, false)
 ON CONFLICT (empleado_id) DO NOTHING;
 
 -- Insertar algunas asistencias de ejemplo
