@@ -173,11 +173,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuSelect, activeMenu, allowedKeys
                         <div className="user-avatar">👤</div>
                         <div className="user-details">
                             <div className="user-name">
-                                {currentUser
-                                    ? `${currentUser.nombre} ${currentUser.apellido_paterno}`
-                                    : 'Usuario'}
+                                {currentUser?.nombreCompleto || currentUser?.nombre || 'Usuario'}
                             </div>
-                            <div className="user-role">{currentUser?.perfil_nombre || currentUser?.perfil_clave || 'Sin perfil'}</div>
+                            <div className="user-role">{currentUser?.perfilNombre || currentUser?.perfilClave || 'Sin perfil'}</div>
                         </div>
                     </div>
                 </div>
