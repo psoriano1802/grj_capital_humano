@@ -91,7 +91,7 @@ const EmpleadosModule: React.FC<{ prefillDraft?: any; onDraftUsed?: () => void }
         if (depRes.success) setDepartamentos(depRes.data);
         if (catRes.success) setCatalogosContratacion(catRes.data);
         setLoading(false);
-    }, [puestos, departamentos]);
+    }, []);
 
     useEffect(() => { loadData(); }, [loadData]);
 

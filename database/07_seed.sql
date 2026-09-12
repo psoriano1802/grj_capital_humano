@@ -1,12 +1,12 @@
 -- Script para insertar datos de prueba en el sistema RH
 
--- Insertar empleados de prueba
-INSERT INTO empleados (numero_empleado, nombre, apellido_paterno, apellido_materno, email, telefono, fecha_nacimiento, fecha_ingreso, puesto, departamento, salario) VALUES
-('EMP001', 'Juan', 'García', 'López', 'juan.garcia@empresa.com', '5551234567', '1990-05-15', '2020-01-10', 'Desarrollador Senior', 'IT', 45000.00),
-('EMP002', 'María', 'Rodríguez', 'Martínez', 'maria.rodriguez@empresa.com', '5551234568', '1988-08-22', '2019-03-15', 'Gerente de RH', 'RRHH', 55000.00),
-('EMP003', 'Carlos', 'Hernández', 'Sánchez', 'carlos.hernandez@empresa.com', '5551234569', '1992-11-30', '2021-06-01', 'Analista de Ventas', 'VENTAS', 35000.00),
-('EMP004', 'Ana', 'Martínez', 'González', 'ana.martinez@empresa.com', '5551234570', '1995-03-12', '2022-02-20', 'Asistente Administrativa', 'ADMIN', 28000.00),
-('EMP005', 'Luis', 'López', 'Pérez', 'luis.lopez@empresa.com', '5551234571', '1987-07-08', '2018-09-10', 'Coordinador de IT', 'IT', 48000.00)
+-- Insertar empleados de prueba (perfil_id: 1=ADMIN, 2=RH, 3=SUPERVISOR, 4=EMPLEADO)
+INSERT INTO empleados (numero_empleado, nombre, apellido_paterno, apellido_materno, email, telefono, fecha_nacimiento, fecha_ingreso, puesto, departamento, salario, perfil_id) VALUES
+('EMP001', 'Juan', 'García', 'López', 'juan.garcia@empresa.com', '5551234567', '1990-05-15', '2020-01-10', 'Desarrollador Senior', 'ADMIN', 45000.00, 4),
+('EMP002', 'María', 'Rodríguez', 'Martínez', 'maria.rodriguez@empresa.com', '5551234568', '1988-08-22', '2019-03-15', 'Gerente de RH', 'RRHH', 55000.00, 2),
+('EMP003', 'Carlos', 'Hernández', 'Sánchez', 'carlos.hernandez@empresa.com', '5551234569', '1992-11-30', '2021-06-01', 'Analista de Ventas', 'VENTAS', 35000.00, 3),
+('EMP004', 'Ana', 'Martínez', 'González', 'ana.martinez@empresa.com', '5551234570', '1995-03-12', '2022-02-20', 'Asistente Administrativa', 'ADMIN', 28000.00, 4),
+('EMP005', 'Luis', 'López', 'Pérez', 'luis.lopez@empresa.com', '5551234571', '1987-07-08', '2018-09-10', 'Coordinador de IT', 'ADMIN', 48000.00, 4)
 ON CONFLICT (numero_empleado) DO NOTHING;
 
 -- Insertar usuarios para los empleados (schema actual: email, password_hash, activo, must_change_password)
